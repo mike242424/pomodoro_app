@@ -7,16 +7,20 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 1
-SHORT_BREAK_MIN = 1
-LONG_BREAK_MIN = 1
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 20
 reps = 0
+timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
 
 def reset_timer():
+    global timer
     global reps
+    start_button.config(state=NORMAL)
+    window.after_cancel(timer)
     reps = 0
     check_label["text"] = ''
     canvas.itemconfig(timer_text, text='15:00')
@@ -27,6 +31,7 @@ def reset_timer():
 
 def start_timer():
     global reps
+    start_button.config(state=DISABLED)
     reps += 1
     work_sec = WORK_MIN * 60
     short_break_sec = SHORT_BREAK_MIN * 60
@@ -46,6 +51,7 @@ def start_timer():
 
 
 def countdown(count):
+    global timer
     global reps
     minutes = math.floor(count / 60)
     seconds = count % 60
@@ -54,7 +60,7 @@ def countdown(count):
         seconds = f'0{str(seconds)}'
     canvas.itemconfig(timer_text, text=f'{minutes}:{seconds}')
     if count > 0:
-        window.after(1000, countdown, count - 1)
+        timer = window.after(1000, countdown, count - 1)
     else:
         start_timer()
         mark = ''
