@@ -7,30 +7,46 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
-is_going = True
+WORK_MIN = 1
+SHORT_BREAK_MIN = 1
+LONG_BREAK_MIN = 1
+reps = 0
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
 
 def reset_timer():
+    global reps
+    reps = 0
     check_label["text"] = ''
     canvas.itemconfig(timer_text, text='15:00')
-    return
     
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 
-def start_timer():                                                                                
-    countdown(5 * 60)
+def start_timer():
+    global reps
+    reps += 1
+    work_sec = WORK_MIN * 60
+    short_break_sec = SHORT_BREAK_MIN * 60
+    long_break_sec = LONG_BREAK_MIN * 60
+
+    if reps % 8 == 0:
+        countdown(long_break_sec)
+        title_label.config(text='Break', fg=RED)
+    elif reps % 2 == 0:
+        countdown(short_break_sec)
+        title_label.config(text="PINK", fg=PINK)
+    else:
+        countdown(work_sec)
+        title_label.config(text='Work', fg=GREEN)
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 
 def countdown(count):
+    global reps
     minutes = math.floor(count / 60)
     seconds = count % 60
 
@@ -39,6 +55,16 @@ def countdown(count):
     canvas.itemconfig(timer_text, text=f'{minutes}:{seconds}')
     if count > 0:
         window.after(1000, countdown, count - 1)
+    else:
+        if reps % 2 == 0:
+            check_label.config(text="✔", fg=GREEN)
+        elif reps % 4 == 0:
+            check_label.config(text="✔✔", fg=GREEN)
+        elif reps % 6 == 0:
+            check_label.config(text="✔✔✔", fg=GREEN)
+        elif reps % 8 == 0:
+            check_label.config(text="✔✔✔✔", fg=GREEN)
+        start_timer()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -58,7 +84,7 @@ canvas.grid(column=1, row=1)
 start_button = Button(text='Start', command=start_timer, fg=GREEN, font=(FONT_NAME, 18, 'bold'), highlightthickness=0)
 start_button.grid(column=0, row=2)
 
-check_label = Label(text="✔", bg=YELLOW, fg=GREEN, font=(FONT_NAME, 35))
+check_label = Label(bg=YELLOW, fg=GREEN, font=(FONT_NAME, 35))
 check_label.grid(column=1, row=3)
 
 reset_button = Button(text='Reset', command=reset_timer, fg=GREEN, font=(FONT_NAME, 18, 'bold'), highlightthickness=0)
