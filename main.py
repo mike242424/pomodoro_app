@@ -22,8 +22,9 @@ def reset_timer():
     start_button.config(state=NORMAL)
     window.after_cancel(timer)
     reps = 0
-    check_label["text"] = ''
-    canvas.itemconfig(timer_text, text='15:00')
+    check_label.config(text='')
+    title_label.config(text='Timer', fg=GREEN)
+    canvas.itemconfig(timer_text, text='00:00')
     
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
