@@ -56,15 +56,12 @@ def countdown(count):
     if count > 0:
         window.after(1000, countdown, count - 1)
     else:
-        if reps % 2 == 0:
-            check_label.config(text="✔", fg=GREEN)
-        elif reps % 4 == 0:
-            check_label.config(text="✔✔", fg=GREEN)
-        elif reps % 6 == 0:
-            check_label.config(text="✔✔✔", fg=GREEN)
-        elif reps % 8 == 0:
-            check_label.config(text="✔✔✔✔", fg=GREEN)
         start_timer()
+        mark = ''
+        work_sessions = math.floor(reps / 2)
+        for _ in range(work_sessions):
+            mark += '✔'
+        check_label.config(text=mark)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
